@@ -1,5 +1,6 @@
 
 from pathlib import Path
+import base64
 import os
 
 import pandas as pd
@@ -56,6 +57,13 @@ st.markdown(
         border-radius:50%; border:45px solid rgba(231,242,234,.13);
       }
       .wh-hero-copy {position:relative; z-index:2; max-width:900px;}
+      .wh-hero-logo {
+        position:relative; z-index:2; flex:0 0 auto; width:190px; min-height:130px;
+        display:flex; align-items:center; justify-content:center;
+        background:white; border-radius:18px; padding:18px 20px;
+        box-shadow:0 12px 28px rgba(0,40,30,.18);
+      }
+      .wh-hero-logo img {display:block; width:100%; height:auto;}
       .wh-eyebrow {font-size:.78rem; font-weight:800; letter-spacing:.13em; text-transform:uppercase; opacity:.82;}
       .wh-hero h1 {color:white !important; font-size:2.45rem !important; line-height:1.08; margin:.45rem 0 .65rem !important;}
       .wh-hero p {color:#EDF8F1; font-size:1.04rem; line-height:1.55; margin:0; max-width:720px;}
@@ -178,7 +186,8 @@ st.markdown(
       .arch-step span {display:block; color:#D9EEE0; font-size:.78rem; line-height:1.35; margin-top:4px;}
       .outcome-banner {margin-top:16px; background:var(--wh-green); color:white; border-radius:14px; padding:15px 18px; text-align:center; font-weight:750;}
       @media (max-width:850px) {
-        .wh-hero {padding:25px;}.wh-hero h1{font-size:2rem!important}
+        .wh-hero {padding:25px; flex-direction:column; align-items:flex-start;}.wh-hero h1{font-size:2rem!important}
+        .wh-hero-logo {width:165px; min-height:105px; padding:14px 17px;}
         .source-ribbon{grid-template-columns:1fr}.source-arrow{transform:rotate(90deg);text-align:center}
         .arch-inputs,.arch-steps,.change-grid,.controls-strip,.integration-flow,.ai-panel,.ai-rules,.ppt-sources,.ppt-process{grid-template-columns:1fr}.arch-step:not(:last-child):after{content:"↓";right:49%;top:auto;bottom:-19px}
         .ppt-step:not(:last-child):after{content:"↓";right:49%;top:auto;bottom:-15px}
@@ -258,8 +267,11 @@ def summary_as_bullets(summary):
     return "\n".join(f"- {line}" for line in lines)
 
 
+logo_path = Path(__file__).resolve().parent / "assets" / "wesfarmers_health_logo.png"
+logo_data = base64.b64encode(logo_path.read_bytes()).decode("ascii")
+
 st.markdown(
-    """
+    f"""
     <section class="wh-hero">
       <div class="wh-hero-copy">
         <div class="wh-eyebrow">Insight &amp; Automation Proof of Concept</div>
@@ -270,6 +282,9 @@ st.markdown(
           <span class="wh-badge">Validated weekly data</span>
           <span class="wh-badge">Automated PowerPoint</span>
         </div>
+      </div>
+      <div class="wh-hero-logo">
+        <img src="data:image/png;base64,{logo_data}" alt="Wesfarmers Health">
       </div>
     </section>
     """,
