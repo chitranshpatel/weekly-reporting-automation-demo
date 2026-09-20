@@ -418,7 +418,10 @@ def generate_management_summary(
             {"role": "user", "content": _build_ai_prompt(kpis)},
         ],
         "temperature": 0.2,
-        "max_tokens": 300,
+        # Reasoning models need enough room for both internal reasoning and the
+        # visible answer. Keep reasoning light so the summary remains concise.
+        "max_completion_tokens": 1200,
+        "reasoning": {"effort": "low", "exclude": True},
     }
 
     try:
@@ -432,10 +435,15 @@ def generate_management_summary(
             timeout=30,
         )
         response.raise_for_status()
-        content = response.json()["choices"][0]["message"]["content"].strip()
-        if not content:
-            raise ValueError("Empty model response")
-        return content, "OpenRouter"
+        result = response.json()
+        choice = result["choices"][0]
+        content = (choice.get("message") or {}).get("content")
+        if not isinstance(content, str) or not content.strip():
+            finish_reason = choice.get("finish_reason", "unknown")
+            raise ValueError(
+                f"Model returned no visible text (finish_reason={finish_reason})"
+            )
+        return content.strip(), "OpenRouter"
     except Exception:
         # The demo must still work during an interview even if the model/API is unavailable.
         return deterministic_summary(kpis), "Built-in fallback"
