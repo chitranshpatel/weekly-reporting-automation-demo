@@ -106,10 +106,19 @@ st.markdown(
       .source-card.green {background:var(--wh-deep); border-color:var(--wh-deep);}
       .source-card.green strong, .source-card.green span {color:white;}
       .source-icon {width:34px; height:34px; border-radius:10px; display:grid; place-items:center; background:var(--wh-mint); color:var(--wh-deep); font-size:1.15rem; margin-bottom:10px;}
-      .source-card strong {display:block; color:var(--wh-deep); font-size:.96rem; margin-bottom:4px;}
+      .source-card strong {display:block; color:var(--wh-deep); font-size:.94rem; margin-bottom:4px; font-weight:850; text-transform:uppercase; letter-spacing:.035em;}
       .source-card span {display:block; color:var(--wh-muted); font-size:.82rem; line-height:1.35;}
       .source-arrow {color:var(--wh-green); font-size:1.5rem; font-weight:800;}
+      .readiness-intro {color:#111111; font-size:.94rem; line-height:1.5; max-width:950px; margin:0 0 15px;}
+      .readiness-grid {display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:10px 0 22px;}
+      .readiness-card {background:white; border:1px solid var(--wh-border); border-top:4px solid var(--wh-green); border-radius:14px; padding:16px; box-shadow:0 6px 18px rgba(0,72,56,.06);}
+      .readiness-card .check-no {display:inline-grid; place-items:center; width:28px; height:28px; border-radius:50%; background:var(--wh-mint); color:var(--wh-deep); font-size:.78rem; font-weight:850; margin-bottom:10px;}
+      .readiness-card strong {display:block; color:var(--wh-deep); font-size:.9rem; line-height:1.3; margin-bottom:7px;}
+      .readiness-card span {display:block; color:#111111; font-size:.78rem; line-height:1.42;}
       .architecture {background:linear-gradient(145deg, #F4F9F5, var(--wh-mint)); border:1px solid var(--wh-border); border-radius:22px; padding:26px; margin-top:14px;}
+      .architecture-purpose {display:flex; justify-content:space-between; align-items:end; gap:18px; margin-bottom:18px;}
+      .architecture-purpose strong {color:var(--wh-deep); font-size:1.08rem;}
+      .architecture-purpose span {color:#111111; font-size:.82rem; line-height:1.4; max-width:650px; text-align:right;}
       .implementation-intro {display:flex; align-items:center; justify-content:space-between; gap:24px; background:var(--wh-deep); color:white; border-radius:18px; padding:22px 25px; margin:12px 0 18px;}
       .implementation-intro strong {display:block; font-size:1.12rem; margin-bottom:5px;}
       .implementation-intro span {display:block; color:#DCEFE3; font-size:.9rem; line-height:1.45; max-width:760px;}
@@ -135,6 +144,10 @@ st.markdown(
       .change-card .icon {font-size:1.4rem; margin:15px 0 7px;}
       .change-card h4 {color:var(--wh-deep); margin:0 0 7px; font-size:1.02rem;}
       .change-card p {color:#111111; margin:0; font-size:.88rem; line-height:1.48;}
+      .section-purpose {display:flex; justify-content:space-between; align-items:end; gap:20px; margin:22px 2px 12px;}
+      .section-purpose strong {color:var(--wh-deep); font-size:1.05rem;}
+      .section-purpose span {color:#111111; font-size:.82rem; line-height:1.4; max-width:670px; text-align:right;}
+      .section-purpose.compact {margin-top:18px;}
       .component-chips {display:flex; flex-wrap:wrap; gap:6px; margin-top:14px;}
       .component-chip {background:#F1F6F3; border:1px solid var(--wh-border); color:var(--wh-deep); border-radius:999px; padding:5px 8px; font-size:.72rem; font-weight:700;}
       .controls-strip {display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:17px 0;}
@@ -189,11 +202,12 @@ st.markdown(
         .wh-hero {padding:25px; flex-direction:column; align-items:flex-start;}.wh-hero h1{font-size:2rem!important}
         .wh-hero-logo {width:165px; min-height:105px; padding:14px 17px;}
         .source-ribbon{grid-template-columns:1fr}.source-arrow{transform:rotate(90deg);text-align:center}
-        .arch-inputs,.arch-steps,.change-grid,.controls-strip,.integration-flow,.ai-panel,.ai-rules,.ppt-sources,.ppt-process{grid-template-columns:1fr}.arch-step:not(:last-child):after{content:"↓";right:49%;top:auto;bottom:-19px}
+        .arch-inputs,.arch-steps,.change-grid,.controls-strip,.integration-flow,.ai-panel,.ai-rules,.ppt-sources,.ppt-process,.readiness-grid{grid-template-columns:1fr}.arch-step:not(:last-child):after{content:"↓";right:49%;top:auto;bottom:-19px}
         .ppt-step:not(:last-child):after{content:"↓";right:49%;top:auto;bottom:-15px}
         .integration-plus{transform:rotate(90deg);min-height:20px}
         .implementation-intro{align-items:flex-start;flex-direction:column}.implementation-intro .impact{white-space:normal}
         .before-after{grid-template-columns:1fr}.transform-arrow{transform:rotate(90deg)}
+        .section-purpose,.architecture-purpose{display:block}.section-purpose span,.architecture-purpose span{display:block;text-align:left;margin-top:5px}
       }
     </style>
     """,
@@ -278,7 +292,6 @@ st.markdown(
         <h1>Weekly Reporting, ready before Monday</h1>
         <p>Automatically combine refreshed Power BI data with additional weekly Excel activity data, create management commentary and prepare the presentation pack.</p>
         <div class="wh-badges">
-          <span class="wh-badge">No manual uploads</span>
           <span class="wh-badge">Validated weekly data</span>
           <span class="wh-badge">Automated PowerPoint</span>
         </div>
@@ -341,24 +354,45 @@ if st.session_state.summary_week != selected_week:
 kpis = calculate_kpis(history, selected_week)
 selected_file = kpis["current_df"]["Source File"].iloc[0]
 
-st.markdown('<div class="wh-section-label">01 · Data readiness</div>', unsafe_allow_html=True)
-st.subheader("Reporting data status")
-s1, s2, s3, s4 = st.columns(4)
-with s1:
-    st.success("Power BI data refreshed")
-    st.caption("Existing database KPIs available")
-with s2:
-    st.success("Additional Excel found")
-    st.caption(selected_file)
-with s3:
-    st.success("Excel data validated")
-    st.caption(f"{len(kpis['current_df'])} store rows checked")
-with s4:
-    st.success("Combined report ready")
-    if kpis["previous_week"] is not None:
-        st.caption(f"Compared with {kpis['previous_week'].strftime('%d %B %Y')}")
-    else:
-        st.caption("First available reporting week")
+selected_week_text = selected_week.strftime("%d %B %Y")
+if kpis["previous_week"] is not None:
+    comparison_text = f"Comparison is ready against {kpis['previous_week'].strftime('%d %B %Y')}."
+else:
+    comparison_text = "This is the first available week, so no prior-week comparison is shown."
+
+st.markdown('<div class="wh-section-label">01 · Checks completed before reporting</div>', unsafe_allow_html=True)
+st.subheader("Why this reporting week is ready")
+st.markdown(
+    "<div class='readiness-intro'>Before the app calculates KPIs, writes commentary or creates the PowerPoint, it confirms that both data sources are available, accurate and aligned to the same reporting week.</div>",
+    unsafe_allow_html=True,
+)
+st.markdown(
+    f"""
+    <div class="readiness-grid">
+      <div class="readiness-card">
+        <div class="check-no">1</div>
+        <strong>Power BI refresh confirmed</strong>
+        <span>Revenue and the existing database KPIs are available for the week ending {selected_week_text}.</span>
+      </div>
+      <div class="readiness-card">
+        <div class="check-no">2</div>
+        <strong>Weekly Excel file received</strong>
+        <span>{selected_file} contains Team Education Sessions and In-store Brand Activations for {len(kpis['current_df'])} stores.</span>
+      </div>
+      <div class="readiness-card">
+        <div class="check-no">3</div>
+        <strong>Excel validation passed</strong>
+        <span>The correct week, required columns, valid values, complete store rows and duplicate records have been checked.</span>
+      </div>
+      <div class="readiness-card">
+        <div class="check-no">4</div>
+        <strong>Combined dataset ready</strong>
+        <span>Power BI and Excel records are aligned using Week Ending and Store. {comparison_text}</span>
+      </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 st.markdown('<div class="wh-section-label">02 · Weekly performance</div>', unsafe_allow_html=True)
 st.subheader("Existing Power BI KPIs")
@@ -534,11 +568,11 @@ st.markdown(
         </div>
         <div class="integration-plus">+</div>
         <div class="integration-node excel">
-          <div class="node-icon">▦</div><strong>Additional Excel files</strong><span>Team Education Sessions and In-store Brand Activations stored in SharePoint.</span>
+          <div class="node-icon">▦</div><strong>Additional Excel files</strong><span>Weekly store-level data containing Week Ending, Store, Team Education Sessions and In-store Brand Activations, stored in SharePoint.</span>
         </div>
         <div class="integration-plus">→</div>
         <div class="integration-node gate">
-          <div class="node-icon">✓</div><strong>Validation gate</strong><span>Correct week, required columns, valid values, complete rows, no duplicate store records and successful refresh.</span>
+          <div class="node-icon">✓</div><strong>Validation step</strong><span>Correct week, required columns, valid values, complete rows, no duplicate store records and successful refresh.</span>
         </div>
         <div class="integration-plus">→</div>
         <div class="integration-node combined">
@@ -548,6 +582,10 @@ st.markdown(
       <div class="join-key">Primary join logic: Week Ending + Store &nbsp; | &nbsp; Failed validation stops the deck and triggers an alert.</div>
     </div>
 
+    <div class="section-purpose">
+      <strong>Three steps from validated data to a finished weekly pack</strong>
+      <span>These cards explain the production sequence: combine the two data sources, create trusted reporting content, then generate and distribute the PowerPoint.</span>
+    </div>
     <div class="change-grid">
       <div class="change-card">
         <span class="tag">Step 1</span>
@@ -569,6 +607,10 @@ st.markdown(
       </div>
     </div>
 
+    <div class="section-purpose compact">
+      <strong>Controls that protect reporting quality</strong>
+      <span>These cards show how the production process prevents incorrect data, handles failures, records evidence and keeps a person responsible for final approval.</span>
+    </div>
     <div class="controls-strip">
       <div class="control-item"><strong>Data-quality gate</strong><span>No deck is produced from incomplete or wrong-period data.</span></div>
       <div class="control-item"><strong>Exception handling</strong><span>Failures create a Teams alert with the affected process step.</span></div>
@@ -628,6 +670,10 @@ st.markdown(
 st.markdown(
     """
     <div class="architecture">
+      <div class="architecture-purpose">
+        <strong>End-to-end Microsoft production architecture</strong>
+        <span>This section shows which Microsoft service owns each stage after the two data sources are combined, from KPI calculation through deck delivery.</span>
+      </div>
       <div class="arch-inputs">
         <div class="arch-card">
           <div class="arch-icon">◉</div>
