@@ -1,6 +1,7 @@
 
 from pathlib import Path
 import base64
+import html
 import os
 
 import pandas as pd
@@ -96,6 +97,15 @@ st.markdown(
       [data-testid="stTabs"] [role="tablist"] {gap:8px; border-bottom:1px solid var(--wh-border);}
       [data-testid="stTabs"] button[role="tab"] {color:var(--wh-deep); font-weight:750; padding:10px 16px;}
       [data-testid="stTabs"] button[role="tab"][aria-selected="true"] {background:var(--wh-mint); border-radius:10px 10px 0 0;}
+      [data-testid="stTabs"] [role="tabpanel"] {color:#111111 !important;}
+      [data-testid="stTabs"] [role="tabpanel"] h1,
+      [data-testid="stTabs"] [role="tabpanel"] h2,
+      [data-testid="stTabs"] [role="tabpanel"] h3,
+      [data-testid="stTabs"] [role="tabpanel"] p,
+      [data-testid="stTabs"] [role="tabpanel"] li {color:#111111 !important; opacity:1 !important;}
+      .summary-card {background:#FFFFFF; border:1px solid var(--wh-border); border-left:5px solid var(--wh-green); border-radius:14px; padding:16px 20px; margin:12px 0 10px; box-shadow:0 6px 18px rgba(0,72,56,.06);}
+      .summary-card ul {margin:0; padding-left:1.25rem;}
+      .summary-card li {color:#111111 !important; font-size:.94rem; line-height:1.5; margin:.42rem 0; font-weight:500;}
       .flow-box {
         border:1px solid var(--wh-border); border-radius:16px; padding:18px 22px;
         background:var(--wh-mint); margin-top:15px; box-shadow:0 5px 14px rgba(0,72,56,.05);
@@ -270,15 +280,15 @@ def delta_revenue_pct(value):
     return f"{value * 100:+.1f}% vs previous week"
 
 
-def summary_as_bullets(summary):
-    """Render model or fallback output as a consistent Markdown bullet list."""
+def summary_as_html(summary):
+    """Render model or fallback output as a high-contrast HTML bullet list."""
     lines = []
     for raw_line in summary.splitlines():
         line = raw_line.strip().lstrip("•-* ").strip()
         if line:
-            # Prevent Markdown from interpreting currency delimiters as inline maths.
-            lines.append(line.replace("$", r"\$"))
-    return "\n".join(f"- {line}" for line in lines)
+            lines.append(html.escape(line))
+    items = "".join(f"<li>{line}</li>" for line in lines)
+    return f'<div class="summary-card"><ul>{items}</ul></div>'
 
 
 logo_path = Path(__file__).resolve().parent / "assets" / "wesfarmers_health_logo.png"
@@ -485,7 +495,7 @@ with summary_tab:
     st.caption(
         "Created automatically from the validated Power BI and additional Excel KPIs for the selected week."
     )
-    st.markdown(summary_as_bullets(st.session_state.summary))
+    st.markdown(summary_as_html(st.session_state.summary), unsafe_allow_html=True)
     if st.session_state.summary_source == "OpenRouter":
         st.caption(
             "AI-generated wording based only on validated KPIs. All calculations were completed before the model received the data."
