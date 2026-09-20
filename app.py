@@ -133,6 +133,27 @@ st.markdown(
       .implementation-intro strong {display:block; font-size:1.12rem; margin-bottom:5px;}
       .implementation-intro span {display:block; color:#DCEFE3; font-size:.9rem; line-height:1.45; max-width:760px;}
       .implementation-intro .impact {background:#BFE3CA; color:var(--wh-deep); border-radius:12px; padding:11px 15px; font-weight:800; white-space:nowrap;}
+      .production-flow-wrap {background:white; border:2px solid var(--wh-green); border-radius:20px; padding:21px; margin:18px 0; box-shadow:0 9px 24px rgba(0,72,56,.08);}
+      .production-flow-head {display:flex; justify-content:space-between; align-items:end; gap:18px; margin-bottom:15px;}
+      .production-flow-head strong {color:var(--wh-deep); font-size:1.08rem;}
+      .production-flow-head span {color:#111111; font-size:.8rem;}
+      .production-flow {display:grid; grid-template-columns:repeat(5,1fr); gap:10px;}
+      .production-step {position:relative; background:#F4F8F5; border:1px solid var(--wh-border); border-radius:13px; padding:14px 12px; min-height:132px;}
+      .production-step:not(:last-child):after {content:"→"; position:absolute; right:-9px; top:43%; color:var(--wh-green); font-weight:900; z-index:3;}
+      .production-step .num {display:inline-grid; place-items:center; width:25px; height:25px; border-radius:50%; background:var(--wh-mint); color:var(--wh-deep); font-size:.72rem; font-weight:850;}
+      .production-step strong {display:block; color:var(--wh-deep); font-size:.85rem; margin:9px 0 4px;}
+      .production-step span {display:block; color:#111111; font-size:.72rem; line-height:1.4;}
+      .production-tools {margin-top:13px; background:var(--wh-mint); color:var(--wh-deep); border-radius:10px; padding:10px 12px; text-align:center; font-size:.78rem; font-weight:750;}
+      .focus-grid {display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:18px 0;}
+      .focus-card {background:white; border:1px solid var(--wh-border); border-radius:17px; padding:19px 20px; box-shadow:0 7px 20px rgba(0,72,56,.06);}
+      .focus-card.ai {background:linear-gradient(135deg,#062F27,#006B49); border-color:#006B49;}
+      .focus-card .kicker {color:var(--wh-green); font-size:.72rem; font-weight:850; letter-spacing:.1em; text-transform:uppercase;}
+      .focus-card h4 {color:var(--wh-deep); font-size:1.05rem; margin:7px 0 9px;}
+      .focus-card p {color:#111111; font-size:.82rem; line-height:1.45; margin:0 0 9px;}
+      .focus-card ul {margin:0; padding-left:1.1rem;}
+      .focus-card li {color:#111111; font-size:.78rem; line-height:1.42; margin:.28rem 0;}
+      .focus-card.ai .kicker {color:#A9D9B8;}
+      .focus-card.ai h4,.focus-card.ai p,.focus-card.ai li {color:white !important;}
       .integration-core {background:white; border:2px solid var(--wh-green); border-radius:20px; padding:22px; margin:18px 0; box-shadow:0 10px 28px rgba(0,72,56,.10);}
       .integration-heading {display:flex; align-items:end; justify-content:space-between; gap:16px; margin-bottom:17px;}
       .integration-heading strong {color:var(--wh-deep); font-size:1.12rem;}
@@ -212,7 +233,8 @@ st.markdown(
         .wh-hero {padding:25px; flex-direction:column; align-items:flex-start;}.wh-hero h1{font-size:2rem!important}
         .wh-hero-logo {width:165px; min-height:105px; padding:14px 17px;}
         .source-ribbon{grid-template-columns:1fr}.source-arrow{transform:rotate(90deg);text-align:center}
-        .arch-inputs,.arch-steps,.change-grid,.controls-strip,.integration-flow,.ai-panel,.ai-rules,.ppt-sources,.ppt-process,.readiness-grid{grid-template-columns:1fr}.arch-step:not(:last-child):after{content:"↓";right:49%;top:auto;bottom:-19px}
+        .arch-inputs,.arch-steps,.change-grid,.controls-strip,.integration-flow,.ai-panel,.ai-rules,.ppt-sources,.ppt-process,.readiness-grid,.production-flow,.focus-grid{grid-template-columns:1fr}.arch-step:not(:last-child):after{content:"↓";right:49%;top:auto;bottom:-19px}
+        .production-step:not(:last-child):after{content:"↓";right:49%;top:auto;bottom:-16px}
         .ppt-step:not(:last-child):after{content:"↓";right:49%;top:auto;bottom:-15px}
         .integration-plus{transform:rotate(90deg);min-height:20px}
         .implementation-intro{align-items:flex-start;flex-direction:column}.implementation-intro .impact{white-space:normal}
@@ -564,177 +586,77 @@ st.markdown(
     """
     <div class="implementation-intro">
       <div>
-        <strong>The core solution: join Power BI reporting data with validated additional Excel data</strong>
-        <span>This does not replace the existing Power BI process. It adds a controlled path for the separate weekly Excel files, validates them, joins both sources using the reporting week and store, and then produces one consistent set of KPIs for the presentation.</span>
+        <strong>One controlled path from two data sources to a finished weekly presentation</strong>
+        <span>Keep the existing Power BI process, add the weekly Excel activity data, validate and join both sources, then automate the commentary, PowerPoint and distribution.</span>
       </div>
-      <div class="impact">Power BI + Excel → one validated model</div>
+      <div class="impact">Power BI + Excel + AI</div>
     </div>
 
-    <div class="integration-core">
-      <div class="integration-heading"><strong>The integration and validation pattern</strong><span>Both sources must pass control checks before reporting continues</span></div>
-      <div class="integration-flow">
-        <div class="integration-node">
-          <div class="node-icon">◉</div><strong>Existing Power BI data</strong><span>Revenue and other database KPIs from the scheduled semantic-model refresh.</span>
-        </div>
-        <div class="integration-plus">+</div>
-        <div class="integration-node excel">
-          <div class="node-icon">▦</div><strong>Additional Excel files</strong><span>Weekly store-level data containing Week Ending, Store, Team Education Sessions and In-store Brand Activations, stored in SharePoint.</span>
-        </div>
-        <div class="integration-plus">→</div>
-        <div class="integration-node gate">
-          <div class="node-icon">✓</div><strong>Validation step</strong><span>Correct week, required columns, valid values, complete rows, no duplicate store records and successful refresh.</span>
-        </div>
-        <div class="integration-plus">→</div>
-        <div class="integration-node combined">
-          <div class="node-icon">◆</div><strong>Combined reporting model</strong><span>One governed dataset for KPIs, week-on-week comparison, commentary and PowerPoint output.</span>
-        </div>
+    <div class="production-flow-wrap">
+      <div class="production-flow-head">
+        <strong>Production workflow</strong>
+        <span>From refreshed data to a review-ready pack</span>
       </div>
-      <div class="join-key">Primary join logic: Week Ending + Store &nbsp; | &nbsp; Failed validation stops the deck and triggers an alert.</div>
+      <div class="production-flow">
+        <div class="production-step"><div class="num">1</div><strong>Combine data</strong><span>Existing Power BI measures plus weekly store-level Excel activity data from SharePoint.</span></div>
+        <div class="production-step"><div class="num">2</div><strong>Validate and join</strong><span>Check week, schema, values and duplicates; join using Week Ending + Store.</span></div>
+        <div class="production-step"><div class="num">3</div><strong>Calculate and visualise</strong><span>Power BI calculates trusted KPIs, comparisons and presentation-ready charts.</span></div>
+        <div class="production-step"><div class="num">4</div><strong>Generate the pack</strong><span>AI drafts the summary; Power Automate exports approved Power BI pages to PPTX.</span></div>
+        <div class="production-step"><div class="num">5</div><strong>Distribute and review</strong><span>Save the dated deck in SharePoint and notify the reporting team in Teams.</span></div>
+      </div>
+      <div class="production-tools">SharePoint + Power Query → Power BI → Power Automate → Azure OpenAI or Copilot Studio → PowerPoint + Teams</div>
     </div>
 
-    <div class="section-purpose">
-      <strong>Three steps from validated data to a finished weekly pack</strong>
-      <span>These cards explain the production sequence: combine the two data sources, create trusted reporting content, then generate and distribute the PowerPoint.</span>
-    </div>
-    <div class="change-grid">
-      <div class="change-card">
-        <span class="tag">Step 1</span>
-        <div class="icon">◉</div>
-        <h4>Bring the data together</h4>
-        <p>Keep the existing Power BI data. Add the separate weekly Excel file after it passes the validation checks.</p>
+    <div class="focus-grid">
+      <div class="focus-card">
+        <div class="kicker">Reporting controls</div>
+        <h4>Only trusted data reaches the presentation</h4>
+        <ul>
+          <li>Failed validation stops the workflow and sends a Teams alert.</li>
+          <li>Refresh time, source file, reporting week and output version are recorded.</li>
+          <li>KPIs remain deterministic and a person approves the final pack.</li>
+        </ul>
       </div>
-      <div class="change-card">
-        <span class="tag">Step 2</span>
-        <div class="icon">▦</div>
-        <h4>Create the reporting content</h4>
-        <p>Power BI calculates the KPIs and prepares presentation-ready charts. AI drafts the summary from those validated results.</p>
-      </div>
-      <div class="change-card">
-        <span class="tag">Step 3</span>
-        <div class="icon">↻</div>
-        <h4>Generate and share the PowerPoint</h4>
-        <p>Power Automate creates the deck, saves it in SharePoint and tells the team in Microsoft Teams that it is ready.</p>
-      </div>
-    </div>
-
-    <div class="section-purpose compact">
-      <strong>Controls that protect reporting quality</strong>
-      <span>These cards show how the production process prevents incorrect data, handles failures, records evidence and keeps a person responsible for final approval.</span>
-    </div>
-    <div class="controls-strip">
-      <div class="control-item"><strong>Data-quality gate</strong><span>No deck is produced from incomplete or wrong-period data.</span></div>
-      <div class="control-item"><strong>Exception handling</strong><span>Failures create a Teams alert with the affected process step.</span></div>
-      <div class="control-item"><strong>Auditability</strong><span>Refresh time, source file and output version are recorded.</span></div>
-      <div class="control-item"><strong>Human review</strong><span>KPIs remain deterministic and commentary is approved before use.</span></div>
-    </div>
-
-    <div class="ppt-production">
-      <div class="ppt-production-head">
-        <strong>How the PowerPoint is created in the Microsoft production environment</strong>
-        <span>The deck content is generated from governed data—not copied manually</span>
-      </div>
-      <div class="ppt-sources">
-        <div class="ppt-source"><strong>Power BI content</strong><span>Revenue, KPI cards, week-on-week comparisons and charts from the combined semantic model.</span></div>
-        <div class="ppt-source"><strong>Additional Excel content</strong><span>Education sessions, brand activations and store activity after validation and integration into Power BI.</span></div>
-        <div class="ppt-source"><strong>AI commentary</strong><span>A short management summary generated from the validated KPIs using the governed prompt and then reviewed.</span></div>
-      </div>
-      <div class="ppt-process">
-        <div class="ppt-step"><div class="step-no">1</div><strong>Design presentation pages in Power BI</strong><span>Create branded 16:9 report pages that match the required PowerPoint slides.</span></div>
-        <div class="ppt-step"><div class="step-no">2</div><strong>Generate the approved summary</strong><span>Power Automate sends validated KPI results to the controlled AI prompt and stores the returned commentary.</span></div>
-        <div class="ppt-step"><div class="step-no">3</div><strong>Export Power BI pages to PPTX</strong><span>The Power BI Export to File action turns each presentation page into a slide in the weekly deck.</span></div>
-        <div class="ppt-step"><div class="step-no">4</div><strong>Save, notify and review</strong><span>Power Automate saves the dated deck in SharePoint and posts its link to Microsoft Teams.</span></div>
-      </div>
-      <div class="ppt-note"><strong>Production design:</strong> dedicated Power BI presentation pages control the slide layout. All visuals use refreshed data, while the commentary page uses the governed AI summary. The exported PowerPoint is a fixed weekly record for review and archiving.</div>
-    </div>
-
-    <div class="ai-panel">
-      <div class="ai-title">
-        <div class="ai-kicker">Controlled use of AI</div>
-        <strong>AI explains the numbers—it does not create or calculate them.</strong>
-        <p>Copilot receives only the validated KPI outputs and approved comparison metrics. Its role is to draft concise management commentary for human review.</p>
-      </div>
-      <div class="ai-rules">
-        <div class="ai-rule"><strong>Grounded input</strong><span>Revenue, changes, activity totals and leading stores come from the combined Power BI model.</span></div>
-        <div class="ai-rule"><strong>Restricted output</strong><span>The prompt prohibits invented figures or unsupported explanations for movements.</span></div>
-        <div class="ai-rule"><strong>Human approval</strong><span>An analyst reviews the commentary and exceptions before the Monday meeting.</span></div>
+      <div class="focus-card ai">
+        <div class="kicker">AI-assisted reporting</div>
+        <h4>AI explains validated numbers—it does not calculate them</h4>
+        <p>The model receives a controlled KPI payload and produces concise management wording for review.</p>
+        <ul>
+          <li>Grounded inputs and a version-controlled prompt</li>
+          <li>Restricted output with no invented figures or causes</li>
+          <li>Output checks, fallback summary and human approval</li>
+        </ul>
       </div>
     </div>
 
     <div class="before-after">
       <div class="state-card before">
         <div class="state-label">Before</div>
-        <strong>Build the presentation on Monday morning</strong>
-        <span>Copy data, update commentary and finish the pack immediately before the meeting.</span>
+        <strong>Build the pack on Monday morning</strong>
+        <span>Copy data, update commentary and assemble slides manually.</span>
       </div>
       <div class="transform-arrow">→</div>
       <div class="state-card after">
         <div class="state-label">After</div>
-        <strong>Open, validate and review the completed pack</strong>
-        <span>The team focuses on exceptions and insights instead of presentation production.</span>
+        <strong>Review a prepared and controlled pack</strong>
+        <span>Focus on exceptions, insights and decisions instead of presentation production.</span>
       </div>
     </div>
     """,
     unsafe_allow_html=True,
 )
 
-st.markdown(
-    """
-    <div class="architecture">
-      <div class="architecture-purpose">
-        <strong>End-to-end Microsoft production architecture</strong>
-        <span>This section shows which Microsoft service owns each stage after the two data sources are combined, from KPI calculation through deck delivery.</span>
-      </div>
-      <div class="arch-inputs">
-        <div class="arch-card">
-          <div class="arch-icon">◉</div>
-          <h4>Existing database reporting</h4>
-          <p>Current source systems continue feeding the Power BI semantic model through the established scheduled refresh.</p>
-        </div>
-        <div class="arch-card">
-          <div class="arch-icon">▦</div>
-          <h4>Additional activity Excel</h4>
-          <p>Standard weekly files land in SharePoint and are validated and combined by Power Query.</p>
-        </div>
-      </div>
-      <div class="arch-connector">↓ &nbsp; combined into one controlled reporting flow &nbsp; ↓</div>
-      <div class="arch-steps">
-        <div class="arch-step">
-          <div class="num">1</div>
-          <strong>Power BI</strong>
-          <span>Refreshes data and calculates trusted KPIs</span>
-        </div>
-        <div class="arch-step">
-          <div class="num">2</div>
-          <strong>Power Automate</strong>
-          <span>Checks completion and controls the Sunday workflow</span>
-        </div>
-        <div class="arch-step">
-          <div class="num">3</div>
-          <strong>Copilot + PowerPoint</strong>
-          <span>Creates commentary and prepares the weekly pack</span>
-        </div>
-        <div class="arch-step">
-          <div class="num">4</div>
-          <strong>SharePoint + Teams</strong>
-          <span>Saves the deck and alerts the reporting team</span>
-        </div>
-      </div>
-      <div class="outcome-banner">Monday changes from building the deck to reviewing the insights.</div>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
-
-with st.expander("Why this design"):
+with st.expander("How the AI is governed — technical detail"):
     st.markdown(
         """
-        - **No manual file upload during the demo.** The weekly files are already stored in the application, which represents the SharePoint folder.
-        - **Existing reporting connections are retained.** Database KPIs continue to refresh through the current Power BI process.
-        - **Only the manual gap is automated.** The additional Excel measures are brought into the same model and deck automatically.
-        - **Historical data is preserved.** Each week is kept as its own snapshot rather than overwriting the previous file.
-        - **The reporting period comes from the data.** The system uses the Week Ending field, not simply the upload date.
-        - **Numbers remain controlled.** KPI calculations happen before any AI-generated commentary.
-        - **The process can run when nobody is working.** In production, the Sunday steps can run automatically so the team starts Monday with a prepared pack.
+        - **Calculations stay outside the model.** Power BI/DAX calculates every KPI and week-on-week movement before AI is called.
+        - **Grounded payload.** The model receives only validated revenue, activity, comparison and leading-store results—not an unrestricted spreadsheet.
+        - **Governed prompt.** The prompt fixes the five-bullet structure, KPI priority, tone, formatting rules and prohibited content.
+        - **Consistent generation.** The prototype uses a low temperature of `0.2` and a short token limit to reduce variation and unnecessary text.
+        - **Output controls.** The model is instructed not to invent figures, causes, recommendations or explanations that are absent from the data.
+        - **Resilience.** A deterministic fallback summary keeps the weekly process running if the AI service is unavailable.
+        - **Audit and approval.** In production, the prompt version, model, reporting week and output would be logged, with analyst approval before distribution.
+        - **Enterprise deployment.** This demo uses OpenRouter; the Microsoft production pattern would use Azure OpenAI or Copilot Studio through managed Power Automate connections.
         """
     )
 
